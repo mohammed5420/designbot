@@ -19,7 +19,9 @@ client.on("ready", () => {
   let lastShotId = "";
   setInterval(() => {
     (async () => {
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({
+        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      });
       const page = await browser.newPage();
       await page.goto("https://dribbble.com/shots", { timeout: 0 });
       let shotID = await page.$eval(".shot-thumbnail", (el) => {
