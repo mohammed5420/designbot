@@ -35,9 +35,7 @@ client.on("ready", () => {
           ".js-thumbnail-placeholder > img",
           (el) => el.src
         );
-        channel.send(
-          `Shot Link: https://dribbble.com${shotLink} \n ${rowHref}`
-        );
+        channel.send(`Shot Link: ${shotLink}`);
       } else {
         await browser.close();
       }
