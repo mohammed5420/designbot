@@ -25,6 +25,9 @@ client.on("ready", () => {
       let shotID = await page.$eval(".shot-thumbnail", (el) => {
         return el.getAttribute("data-thumbnail-id");
       });
+      let shotLink = await page.$eval(".dribbble-link js-shot-link", (el) => {
+        return el.href;
+      });
       console.log(shotID);
       if (lastShotId !== shotID) {
         lastShotId = shotID;
@@ -32,7 +35,9 @@ client.on("ready", () => {
           ".js-thumbnail-placeholder > img",
           (el) => el.src
         );
-        channel.send(rowHref);
+        channel.send(
+          `Shot Link: https://dribbble.com${shotLink} \n ${rowHref}`
+        );
       } else {
         await browser.close();
       }
