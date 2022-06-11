@@ -25,7 +25,7 @@ client.on("ready", () => {
       let shotID = await page.$eval(".shot-thumbnail", (el) => {
         return el.getAttribute("data-thumbnail-id");
       });
-      let shotLink = await page.$eval(".dribbble-link .js-shot-link", (el) => {
+      let shotLink = await page.$eval(".shot-thumbnail-link", (el) => {
         return el.href;
       });
       console.log(shotID);
