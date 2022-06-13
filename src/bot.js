@@ -1,24 +1,23 @@
 require("dotenv").config();
 const axios = require("axios");
 const { Client, Intents, Channel } = require("discord.js");
-
+const fs = require("fs")
 const puppeteer = require("puppeteer");
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 });
 
-const PREFIX = "$";
 // const channel = new Channel(client);
-client.on("ready", () => {
+client.on("ready", async () => {
   console.log("Bot is ready");
 
   const channel = client.channels.cache.get("953334253142290432");
 
-  // console.log(channel)
-  let lastShotId = "";
+  
   setInterval(() => {
     (async () => {
+      let lastShotId = await JSON.parse(fs.readFileSync("./src/data.json","utf-8")).lastShotID;
       const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
       const page = await browser.newPage();
       await page.goto("https://dribbble.com/shots", { timeout: 0 });
@@ -30,7 +29,7 @@ client.on("ready", () => {
       });
       console.log(shotID);
       if (lastShotId !== shotID) {
-        lastShotId = shotID;
+        await fs.writeFileSync("./src/data.json",JSON.stringify({lastShotID: shotID}))
         let rowHref = await page.$eval(
           ".js-thumbnail-placeholder > img",
           (el) => el.src
