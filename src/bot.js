@@ -14,34 +14,36 @@ client.on("ready", async () => {
 
   const channel = client.channels.cache.get("953334253142290432");
 
-  setInterval(() => {
-    (async () => {
-      //Lunch puppeteer headless browser
-      const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
-      const page = await browser.newPage();
-      await page.goto("https://dribbble.com/shots", { timeout: 0 });
+  setInterval(async () => {
+    //Lunch puppeteer headless browser
+    const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+    const page = await browser.newPage();
+    await page.goto("https://dribbble.com/shots/popular", {
+      waitUntil: "load",
+      timeout: 0,
+    });
 
-      //Get The last shot link from data.json file
-      let lastShotLink = await JSON.parse(
-        fs.readFileSync("./src/data.json", "utf-8")
-      ).lastShotLink;
-      console.log("LastShotLink => ",lastShotLink);
-      //Get Current the shot link
-      let shotLink = await page.$eval(".shot-thumbnail-link", (el) => {
-        return el.href;
-      });
+    //Get The last shot link from data.json file
+    let { lastShotLink } = await JSON.parse(
+      fs.readFileSync("./src/data.json", "utf-8")
+    );
+    console.log("LastShotLink => ", lastShotLink);
+    //Get Current the shot link
+    let shotLink = await page.$eval(".shot-thumbnail-link", (el) => {
+      return el.href;
+    });
 
-      if (lastShotLink == shotLink) {
-        return await browser.close();
-      }
-      //Write the current shot link into data file
-      await fs.writeFileSync(
-        "./src/data.json",
-        JSON.stringify({ lastShotLink: shotLink })
-      );
-      await channel.send(`Shot Link: ${shotLink}`);
-    })();
-  }, 60000);
+    if (lastShotLink == shotLink) {
+      return await browser.close();
+    }
+    //Write the current shot link into data file
+    await fs.writeFileSync(
+      "./src/data.json",
+      JSON.stringify({ lastShotLink: shotLink }),
+      "utf-8"
+    );
+    await channel.send(`Shot Link: ${shotLink}`);
+  }, 35000);
 });
 
 client.login(process.env.BOT_TOKEN);
