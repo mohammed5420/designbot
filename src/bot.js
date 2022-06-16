@@ -1,7 +1,7 @@
 require("dotenv").config();
 const axios = require("axios");
 const { Client, Intents, Channel } = require("discord.js");
-const fs = require("fs")
+const fs = require("fs");
 const puppeteer = require("puppeteer");
 
 const client = new Client({
@@ -14,46 +14,50 @@ client.on("ready", async () => {
 
   const channel = client.channels.cache.get("953334253142290432");
 
-  
   setInterval(() => {
     (async () => {
-      let lastShotId = await JSON.parse(fs.readFileSync("./src/data.json","utf-8")).lastShotID;
+      //Lunch puppeteer headless browser
       const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
       const page = await browser.newPage();
       await page.goto("https://dribbble.com/shots", { timeout: 0 });
-      let shotID = await page.$eval(".shot-thumbnail", (el) => {
-        return el.getAttribute("data-thumbnail-id");
-      });
+
+      //Get The last shot link from data.json file
+      let lastShotLink = await JSON.parse(
+        fs.readFileSync("./src/data.json", "utf-8")
+      ).lastShotLink;
+      console.log("LastShotLink => ",lastShotLink);
+      //Get Current the shot link
       let shotLink = await page.$eval(".shot-thumbnail-link", (el) => {
         return el.href;
       });
-      console.log(shotID);
-      if (lastShotId !== shotID) {
-        await fs.writeFileSync("./src/data.json",JSON.stringify({lastShotID: shotID}))
-        let rowHref = await page.$eval(
-          ".js-thumbnail-placeholder > img",
-          (el) => el.src
-        );
-        channel.send(`Shot Link: ${shotLink}`);
-      } else {
-        await browser.close();
+
+      if (lastShotLink == shotLink) {
+        return await browser.close();
       }
-
-      // axios
-      // .get(`https://api.dribbble.com/v2/shots/18280341-minecraft-ocean-monument-Redesign`, {
-      //   params: {
-      //     access_token: process.env.DRIBBBLE_ACCESS_TOKEN,
-      //   },
-      // })
-      // .then((res) => {
-      //   console.log({res});
-      //   // res.data.map((project) => {
-
-      //   // });
-      // });
+      //Write the current shot link into data file
+      await fs.writeFileSync(
+        "./src/data.json",
+        JSON.stringify({ lastShotLink: shotLink })
+      );
+      await channel.send(`Shot Link: ${shotLink}`);
     })();
-  }, 35000);
+  }, 60000);
 });
+
+client.login(process.env.BOT_TOKEN);
+
+// axios
+// .get(`https://api.dribbble.com/v2/shots/18280341-minecraft-ocean-monument-Redesign`, {
+//   params: {
+//     access_token: process.env.DRIBBBLE_ACCESS_TOKEN,
+//   },
+// })
+// .then((res) => {
+//   console.log({res});
+//   // res.data.map((project) => {
+
+//   // });
+// });
 
 // client.on("messageCreate", (message) => {
 //   if (message.content == "design") {
@@ -64,5 +68,3 @@ client.on("ready", async () => {
 //     });
 //   }
 // });
-
-client.login(process.env.BOT_TOKEN);
