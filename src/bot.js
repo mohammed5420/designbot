@@ -2,6 +2,9 @@ require("dotenv").config();
 const { Client, Intents } = require("discord.js");
 const fs = require("fs");
 const puppeteer = require("puppeteer");
+require("../db.config");
+
+const LastShot = require("./Shot");
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
@@ -15,33 +18,34 @@ client.on("ready", async () => {
 
   setInterval(async () => {
     //Lunch puppeteer headless browser
-    const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
-    const page = await browser.newPage();
-    await page.goto("https://dribbble.com/shots/popular", {
-      waitUntil: "load",
-      timeout: 0,
-    });
-
-    //Get The last shot link from data.json file
-    let { lastShotLink } = await JSON.parse(
-      await fs.readFileSync("./src/data.json", "utf-8")
-    );
-    console.log("LastShotLink => ", lastShotLink);
-    //Get Current the shot link
-    let shotLink = await page.$eval(".shot-thumbnail-link", (el) => {
-      return el.href;
-    });
-
-    if (lastShotLink == shotLink) {
-      return await browser.close();
+    try {
+      const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+      const page = await browser.newPage();
+      await page.goto("https://dribbble.com/shots/popular", {
+        waitUntil: "load",
+        timeout: 0,
+      });
+      //Get last shot url
+      let shotLink = await page.$eval(".shot-thumbnail-link", (el) => {
+        return el.href;
+      });
+      //check if the last shot url matches the current url
+      let lastShot = await LastShot.findOne({ shotID: shotLink });
+      
+      if (lastShot == null) {
+        let docsCount = await LastShot.estimatedDocumentCount();
+        if (docsCount > 0) {
+          await LastShot.updateOne({ access: true }, { shotID: shotLink });
+        } else {
+          await LastShot.create({ shotID: shotLink });
+        }
+        await channel.send(`Shot Link: ${shotLink}`);
+        return browser.close();
+      }
+      return browser.close();
+    } catch (error) {
+      console.error(error);
     }
-    //Write the current shot link into data file
-    await fs.writeFileSync(
-      "./src/data.json",
-      JSON.stringify({ lastShotLink: shotLink }),
-      "utf-8"
-    );
-    await channel.send(`Shot Link: ${shotLink}`);
   }, 40000);
 });
 
