@@ -1,6 +1,5 @@
 require("dotenv").config();
-const axios = require("axios");
-const { Client, Intents, Channel } = require("discord.js");
+const { Client, Intents } = require("discord.js");
 const fs = require("fs");
 const puppeteer = require("puppeteer");
 
@@ -25,7 +24,7 @@ client.on("ready", async () => {
 
     //Get The last shot link from data.json file
     let { lastShotLink } = await JSON.parse(
-      fs.readFileSync("./src/data.json", "utf-8")
+      await fs.readFileSync("./src/data.json", "utf-8")
     );
     console.log("LastShotLink => ", lastShotLink);
     //Get Current the shot link
@@ -43,7 +42,7 @@ client.on("ready", async () => {
       "utf-8"
     );
     await channel.send(`Shot Link: ${shotLink}`);
-  }, 35000);
+  }, 40000);
 });
 
 client.login(process.env.BOT_TOKEN);
