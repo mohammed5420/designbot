@@ -46,7 +46,7 @@ client.on("ready", async () => {
     } catch (error) {
       console.error(error);
     }
-  }, 1000 * 60 * 3);
+  }, 1000 * 60 * 30);
 });
 
 client.login(process.env.BOT_TOKEN);
