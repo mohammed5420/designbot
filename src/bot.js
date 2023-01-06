@@ -2,6 +2,7 @@ require("dotenv").config();
 const { Client, Intents } = require("discord.js");
 const fs = require("fs");
 const puppeteer = require("puppeteer");
+const cron = require("node-cron");
 require("../db.config");
 
 const LastShot = require("./Shot");
@@ -16,8 +17,7 @@ client.on("ready", async () => {
 
   const channel = client.channels.cache.get("953334253142290432");
 
-  setInterval(async () => {
-    //Lunch puppeteer headless browser
+  cron.schedule("*/10 * * * *", async () => {
     try {
       const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
       const page = await browser.newPage();
@@ -29,9 +29,10 @@ client.on("ready", async () => {
       let shotLink = await page.$eval(".shot-thumbnail-link", (el) => {
         return el.href;
       });
+
       //check if the last shot url matches the current url
       let lastShot = await LastShot.findOne({ shotID: shotLink });
-      
+
       if (lastShot == null) {
         let docsCount = await LastShot.estimatedDocumentCount();
         if (docsCount > 0) {
@@ -46,30 +47,7 @@ client.on("ready", async () => {
     } catch (error) {
       console.error(error);
     }
-  }, 1000 * 60 * 30);
+  });
 });
 
 client.login(process.env.BOT_TOKEN);
-
-// axios
-// .get(`https://api.dribbble.com/v2/shots/18280341-minecraft-ocean-monument-Redesign`, {
-//   params: {
-//     access_token: process.env.DRIBBBLE_ACCESS_TOKEN,
-//   },
-// })
-// .then((res) => {
-//   console.log({res});
-//   // res.data.map((project) => {
-
-//   // });
-// });
-
-// client.on("messageCreate", (message) => {
-//   if (message.content == "design") {
-//     message.reply({
-//       files: [
-//         "https://cdn.dribbble.com/userupload/2846072/file/original-3c5a87a25f237249ffdd9174b8c988f3.png?compress=1&resize=1200x900",
-//       ],
-//     });
-//   }
-// });

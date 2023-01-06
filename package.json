@@ -15,6 +15,7 @@
     "discord.js": "^13.8.0",
     "dotenv": "^16.0.1",
     "mongoose": "^6.4.0",
+    "node-cron": "^3.0.2",
     "nodemon": "^2.0.16",
     "puppeteer": "^14.3.0"
   }
