@@ -19,7 +19,7 @@ client.on("ready", async () => {
 
   cron.schedule("*/10 * * * *", async () => {
     try {
-      const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+      const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
       const page = await browser.newPage();
       await page.goto("https://dribbble.com/shots/popular", {
         waitUntil: "load",
