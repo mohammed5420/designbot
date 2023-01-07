@@ -17,7 +17,7 @@ client.on("ready", async () => {
 
   const channel = client.channels.cache.get("953334253142290432");
 
-  cron.schedule("*/10 * * * *", async () => {
+  cron.schedule("* */1 * * *", async () => {
     try {
       const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
       const page = await browser.newPage();
