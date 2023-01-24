@@ -5,21 +5,30 @@ const puppeteer = require("puppeteer");
 const cron = require("node-cron");
 require("../db.config");
 
-const LastShot = require("./Shot");
+const DribbbleShot = require("./Shot");
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 });
 
 // const channel = new Channel(client);
+
+// q: how to create new channel using discord.js?
+// a: https://discordjs.guide/popular-topics/faq.html#how-do-i-create-a-channel
 client.on("ready", async () => {
   console.log("Bot is ready");
+  //create a channel if it doesn't exist with name "inspiration"
+  let channel;
+  let existedChannel = client.channels.cache.find("name", "inspiration");
+  channel = existedChannel
+    ? existedChannel
+    : await client.channels.create("inspiration", { type: "text" });
 
-  const channel = client.channels.cache.get("953334253142290432");
-
-  cron.schedule("* */1 * * *", async () => {
+  cron.schedule("* * */1 * *", async () => {
     try {
-      const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
+      const browser = await puppeteer.launch({
+        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      });
       const page = await browser.newPage();
       await page.goto("https://dribbble.com/shots/popular", {
         waitUntil: "load",
@@ -31,17 +40,13 @@ client.on("ready", async () => {
       });
 
       //check if the last shot url matches the current url
-      let lastShot = await LastShot.findOne({ shotID: shotLink });
+      let lastShot = await DribbbleShot.findOne({
+        shotID: shotLink,
+      });
 
-      if (lastShot == null) {
-        let docsCount = await LastShot.estimatedDocumentCount();
-        if (docsCount > 0) {
-          await LastShot.updateOne({ access: true }, { shotID: shotLink });
-        } else {
-          await LastShot.create({ shotID: shotLink });
-        }
+      if (!lastShot) {
+        await DribbbleShot.create({ shotID: shotLink });
         await channel.send(`Shot Link: ${shotLink}`);
-        return browser.close();
       }
       return browser.close();
     } catch (error) {
