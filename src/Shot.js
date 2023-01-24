@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const lastShot = mongoose.Schema({
+const lastShot = new mongoose.Schema({
   shotID: {
     type: String,
     required: true,
