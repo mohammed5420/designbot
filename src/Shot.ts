@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const lastShot = new mongoose.Schema({
   shotID: {
     type: String,
@@ -10,4 +10,4 @@ const lastShot = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("lastShot", lastShot);
+export default  mongoose.model("lastShot", lastShot);
