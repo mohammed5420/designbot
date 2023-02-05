@@ -414,7 +414,7 @@ client.on("ready", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRunt
             return _ref3.apply(this, arguments);
           };
         }();
-        cron.schedule("* * */1 * *", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        cron.schedule("* */1 * * *", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
           var browser, page, shotID, existedShot, newShot, inspirationChannels;
           return _regeneratorRuntime().wrap(function _callee4$(_context4) {
             while (1) switch (_context4.prev = _context4.next) {
