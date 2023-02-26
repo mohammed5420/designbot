@@ -1,26 +1,25 @@
-import { BaseGuildTextChannel, ChannelType, Client } from "discord.js";
-import puppeteer from "puppeteer";
-import cron from "node-cron";
-import DribbbleShot from "./Shot";
-import "./db/db.config";
-import "dotenv/config";
+import { BaseGuildTextChannel, ChannelType, Client } from 'discord.js';
+import puppeteer from 'puppeteer';
+import cron from 'node-cron';
+import DribbbleShot from './Shot';
+import './db/db.config';
+import 'dotenv/config';
 //create a discord client to send messages to channels inside bot servers
 const client = new Client({
-  intents: ["GuildMessages", "Guilds", "GuildMessageTyping"],
+  intents: ['GuildMessages', 'Guilds', 'GuildMessageTyping'],
 });
 
-
-client.on("ready", async () => {
-  console.log("Bot is ready");
+client.on('ready', async () => {
+  console.log('Bot is ready');
 
   client.guilds.cache.map(async (guild) => {
     const existedChannel = guild.channels.cache.find(
-      (channel) => channel.name === "💡-inspirations"
+      (channel) => channel.name === '💡-inspirations'
     );
 
     if (!existedChannel)
       await guild.channels.create({
-        name: "💡-inspirations",
+        name: '💡-inspirations',
       });
   });
 
@@ -28,9 +27,11 @@ client.on("ready", async () => {
     //map over guilds and find channel with id of name inspiration
     const inspirationChannels = client.guilds.cache.map((guild) => {
       const channel = guild.channels.cache.find(
-        (channel) => channel.name === "💡-inspirations" && channel.type === ChannelType.GuildText
+        (channel) =>
+          channel.name === '💡-inspirations' &&
+          channel.type === ChannelType.GuildText
       );
-      if(!channel) return;
+      if (!channel) return;
       return channel as BaseGuildTextChannel;
     });
 
@@ -38,24 +39,29 @@ client.on("ready", async () => {
   };
 
 
-
-  cron.schedule("* * */1 * *", async () => {
+  // this cron job will run daily at 12:00 AM
+  cron.schedule('0 0 */1 * *', async () => {
     try {
       const browser = await puppeteer.launch({
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        headless: true,
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-extensions',
+        ],
       });
       const page = await browser.newPage();
-      await page.goto("https://dribbble.com/shots/popular", {
-        waitUntil: "load",
+      await page.goto('https://dribbble.com/shots/popular', {
+        waitUntil: 'load',
         timeout: 0,
       });
-      
+
       const shotID = await page.evaluate(() => {
-        const shot = document.querySelector(".shot-thumbnail-link");
-        return shot?.getAttribute("href");
+        const shot = document.querySelector('.shot-thumbnail-link');
+        return shot?.getAttribute('href');
       });
 
-      if(!shotID) return browser.close();
+      if (!shotID) return browser.close();
 
       const existedShot = await DribbbleShot.findOne({ shotID: shotID });
 
@@ -70,10 +76,8 @@ client.on("ready", async () => {
       const inspirationChannels = await getInspirationChannels();
 
       inspirationChannels.map(async (channel) => {
-        if(channel)
-        await channel.send(`https://dribbble.com${shotID}`);
+        if (channel) await channel.send(`https://dribbble.com${shotID}`);
       });
-
 
       return browser.close();
     } catch (error) {

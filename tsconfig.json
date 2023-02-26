@@ -1,14 +1,33 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "ESNext",
-    "lib": ["es6"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "outDir": "build",
-    "rootDir": "src",
+    "skipLibCheck": true,
     "strict": true,
-    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
     "esModuleInterop": true,
-    "moduleResolution": "node"
-  }
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "noUncheckedIndexedAccess": true,
+    "baseUrl": ".",
+    "paths": {
+      "@public/*": ["public/*"]
+    },
+    "outDir": "dist"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.cjs",
+    "**/*.mjs",
+    "next-i18next.config.js"
+  ],
+  "exclude": ["node_modules"]
 }
