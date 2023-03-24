@@ -38,9 +38,7 @@ client.on('ready', async () => {
     return inspirationChannels;
   };
 
-
-  // this cron job will run daily at 12:00 AM
-  cron.schedule('0 0 */1 * *', async () => {
+  cron.schedule('*/1 * * * *', async () => {
     try {
       const browser = await puppeteer.launch({
         headless: true,
