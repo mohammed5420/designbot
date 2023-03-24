@@ -38,7 +38,7 @@ client.on('ready', async () => {
     return inspirationChannels;
   };
 
-  cron.schedule('*/1 * * * *', async () => {
+  cron.schedule('0 0 */1 * *', async () => {
     try {
       const browser = await puppeteer.launch({
         headless: true,
