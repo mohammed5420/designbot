@@ -63,6 +63,7 @@
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "mongoose": "^6.12.7",
-    "puppeteer": "^22.6.1"
+    "puppeteer": "^22.6.1",
+    "undici": "^6.10.1"
   }
 }
