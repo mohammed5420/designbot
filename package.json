@@ -16,7 +16,7 @@
     "lint": "dts lint",
     "prepare": "dts build",
     "size": "size-limit",
-    "start": "node dist/index.js",
+    "start": "node dist/index.js --trace-deprecation",
     "dev": "tsc src/index.ts --watch --outDir dist --module esnext"
   },
   "husky": {
