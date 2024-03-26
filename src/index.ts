@@ -1,6 +1,5 @@
 import { BaseGuildTextChannel, ChannelType, Client } from 'discord.js';
 import puppeteer from 'puppeteer';
-import cron from 'node-cron';
 import DribbbleShot from './Shot';
 import './db/db.config';
 import 'dotenv/config';

@@ -63,7 +63,6 @@
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "mongoose": "^6.12.7",
-    "node-cron": "^3.0.3",
     "puppeteer": "^22.6.1"
   }
 }
