@@ -38,50 +38,48 @@ client.on('ready', async () => {
     return inspirationChannels;
   };
 
-  cron.schedule('0 0 */1 * *', async () => {
-    try {
-      const browser = await puppeteer.launch({
-        headless: true,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-extensions',
-        ],
-      });
-      const page = await browser.newPage();
-      await page.goto('https://dribbble.com/shots/popular', {
-        waitUntil: 'load',
-        timeout: 0,
-      });
+  try {
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-extensions',
+      ],
+    });
+    const page = await browser.newPage();
+    await page.goto('https://dribbble.com/shots/popular', {
+      waitUntil: 'load',
+      timeout: 0,
+    });
 
-      const shotID = await page.evaluate(() => {
-        const shot = document.querySelector('.shot-thumbnail-link');
-        return shot?.getAttribute('href');
-      });
+    const shotID = await page.evaluate(() => {
+      const shot = document.querySelector('.shot-thumbnail-link');
+      return shot?.getAttribute('href');
+    });
 
-      if (!shotID) return browser.close();
+    if (!shotID) return browser.close();
 
-      const existedShot = await DribbbleShot.findOne({ shotID: shotID });
+    const existedShot = await DribbbleShot.findOne({ shotID: shotID });
 
-      if (existedShot) return browser.close();
+    if (existedShot) return browser.close();
 
-      const newShot = new DribbbleShot({
-        shotID: shotID,
-      });
+    const newShot = new DribbbleShot({
+      shotID: shotID,
+    });
 
-      await newShot.save();
+    await newShot.save();
 
-      const inspirationChannels = await getInspirationChannels();
+    const inspirationChannels = await getInspirationChannels();
 
-      inspirationChannels.map(async (channel) => {
-        if (channel) await channel.send(`https://dribbble.com${shotID}`);
-      });
+    inspirationChannels.map(async (channel) => {
+      if (channel) await channel.send(`https://dribbble.com${shotID}`);
+    });
 
-      return browser.close();
-    } catch (error) {
-      console.error(error);
-    }
-  });
+    return browser.close();
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 client.login(process.env.BOT_TOKEN);
