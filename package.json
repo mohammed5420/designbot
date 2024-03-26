@@ -34,7 +34,7 @@
     "testEnvironment": "node"
   },
   "engines": {
-    "node": "20.11.0"
+    "node": "20.9.0"
   },
   "size-limit": [
     {
