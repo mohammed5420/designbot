@@ -5,24 +5,16 @@
   "author": "Mohamed Salah",
   "main": "dist/index.js",
   "module": "dist/cron-service.esm.js",
-  "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "src"
   ],
   "scripts": {
-    "analyze": "size-limit --why",
     "build": "dts build",
     "lint": "dts lint",
     "prepare": "dts build",
-    "size": "size-limit",
     "start": "node dist/index.js --trace-deprecation ...",
     "dev": "tsc src/index.ts --watch --outDir dist --module esnext"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "dts lint"
-    }
   },
   "prettier": {
     "printWidth": 80,
@@ -30,40 +22,20 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "jest": {
-    "testEnvironment": "node"
-  },
   "engines": {
-    "node": "20.9.0"
+    "node": ">=20.0.0"
   },
-  "size-limit": [
-    {
-      "path": "dist/cron-service.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/cron-service.esm.js",
-      "limit": "10 KB"
-    }
-  ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^8.2.6",
     "@tsconfig/recommended": "^1.0.4",
     "@types/node": "^18.19.26",
-    "@types/node-cron": "^3.0.11",
     "dts-cli": "^1.6.3",
-    "husky": "^8.0.3",
-    "size-limit": "^8.2.6",
     "ts-node": "^10.9.2",
     "tslib": "^2.6.2",
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "axios": "^0.27.2",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
-    "mongoose": "^6.12.7",
-    "puppeteer": "^22.6.1",
-    "undici": "^6.10.1"
+    "puppeteer": "^22.6.1"
   }
 }
