@@ -1,7 +1,5 @@
 import { BaseGuildTextChannel, ChannelType, Client } from 'discord.js';
 import puppeteer from 'puppeteer';
-import DribbbleShot from './Shot';
-import './db/db.config';
 import 'dotenv/config';
 //create a discord client to send messages to channels inside bot servers
 const client = new Client({
@@ -58,16 +56,6 @@ client.on('ready', async () => {
     });
 
     if (!shotID) return browser.close();
-
-    const existedShot = await DribbbleShot.findOne({ shotID: shotID });
-
-    if (existedShot) return browser.close();
-
-    const newShot = new DribbbleShot({
-      shotID: shotID,
-    });
-
-    await newShot.save();
 
     const inspirationChannels = await getInspirationChannels();
 
