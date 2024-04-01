@@ -20,5 +20,4 @@
     'libxtst6',
     'xdg-utils',
     "chromium-browser",
-    "chrome-linux64"
     ]
