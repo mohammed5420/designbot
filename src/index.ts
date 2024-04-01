@@ -36,8 +36,9 @@ client.on('ready', async () => {
   };
 
   try {
-    const browser = await puppeteer.connect({
-      browserWSEndpoint: process.env.BROWSER_WS_ENDPOINT,
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
     await page.goto('https://dribbble.com/shots/popular', {
