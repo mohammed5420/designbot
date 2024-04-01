@@ -1,5 +1,5 @@
 ### Daily Design
-It's a Discord bot that's send a populer Dribbble Shots daily
+Design bot is a discord bot that helps you keep inspired with the latest design trends by providing you with a daily dose of pupular designs from Dribbble.
 
 ### How to use
 - Clone the repo
