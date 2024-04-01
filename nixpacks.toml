@@ -18,5 +18,7 @@
     'libxrandr2',
     'libxss1',
     'libxtst6',
-    'xdg-utils'
+    'xdg-utils',
+    "chromium-browser",
+    "chrome-linux64"
     ]
